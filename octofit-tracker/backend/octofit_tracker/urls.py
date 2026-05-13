@@ -16,12 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from django.http import JsonResponse
+import os
 
 # Placeholder routers for demonstration; actual viewsets should be registered here
 router = routers.DefaultRouter()
 # Example: router.register(r'activities', ActivitiesViewSet)
 
+def api_root(request):
+    codespace_name = os.environ.get('CODESPACE_NAME', '')
+    api_url = f"https://{codespace_name}-8000.app.github.dev/api/" if codespace_name else "http://localhost:8000/api/"
+    return JsonResponse({"api_url": api_url})
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/', api_root),
 ]
